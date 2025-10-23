@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import {
+  addTransitionType,
+  startTransition,
+  useState,
+  ViewTransition,
+} from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,12 +17,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -27,6 +26,8 @@ import {
 } from "@/components/ui/pagination";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import { products } from "@/lib/products";
+import { ProductImage, ProductImageDialog } from "@/components/product-image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,140 +36,158 @@ const Page = () => {
   const totalPages = products.length;
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    startTransition(() => {
+      if (page >= 1 && page <= totalPages) {
+        setCurrentPage(page);
+      }
+    });
   };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Back Button */}
-      <div className="p-4">
-        <Button variant="outline" asChild>
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Menu
-          </Link>
-        </Button>
-      </div>
+    <ViewTransition>
+      <div className="min-h-screen flex flex-col">
+        {/* Back Button */}
+        <div className="p-4">
+          <Button variant="outline" asChild>
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Menu
+            </Link>
+          </Button>
+        </div>
 
-      {/* Main Content - Two Column Layout */}
-      <div className="flex-1 container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Column - Product Image */}
-          <div className="flex items-center justify-center">
-            <Card className="w-full">
-              <CardContent className="p-6">
-                <div
-                  className="h-156 relative bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
-                  onClick={() => setIsDialogOpen(true)}
-                >
-                  <span className="text-gray-400 text-9xl">
-                    {currentProduct.emoji}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        {/* Main Content - Two Column Layout */}
+        <div className="flex-1 container slide-in-from-right mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Left Column - Product Image */}
+            {isDialogOpen ? (
+              <>
+                <ProductImageDialog
+                  id={currentProduct.id.toString()}
+                  isOpen={isDialogOpen}
+                  onOpenChange={() =>
+                    startTransition(() => setIsDialogOpen(false))
+                  }
+                  emoji={currentProduct.emoji}
+                />
+                <Skeleton className="bg-background" />
+              </>
+            ) : (
+              <ProductImage
+                id={currentProduct.id.toString()}
+                emoji={currentProduct.emoji}
+                onClick={() => startTransition(() => setIsDialogOpen(true))}
+              />
+            )}
 
-          {/* Right Column - Product Details */}
-          <div className="flex flex-col gap-6">
-            <div>
-              {currentProduct.badge && (
-                <Badge className="mb-2">{currentProduct.badge}</Badge>
-              )}
-              <h1 className="text-4xl font-bold mb-2">{currentProduct.name}</h1>
-              <p className="text-3xl font-semibold text-primary">
-                ${currentProduct.price.toFixed(2)}
-              </p>
+            {/* Right Column - Product Details */}
+            <div className="flex flex-col gap-6">
+              <div>
+                {currentProduct.badge && (
+                  <Badge className="mb-2">{currentProduct.badge}</Badge>
+                )}
+                <h1 className="text-4xl font-bold mb-2">
+                  {currentProduct.name}
+                </h1>
+                <p className="text-3xl font-semibold text-primary">
+                  ${currentProduct.price.toFixed(2)}
+                </p>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Description</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base">
+                    {currentProduct.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Features</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                    {currentProduct.features.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              <Button size="lg" className="w-full" disabled>
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Add to Cart
+              </Button>
             </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Description</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base">
-                  {currentProduct.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Features</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  {currentProduct.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Button size="lg" className="w-full" disabled>
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              Add to Cart
-            </Button>
           </div>
         </div>
-      </div>
 
-      {/* Footer - Pagination */}
-      <div className="border-t py-6">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(currentPage - 1)}
-                className={
-                  currentPage === 1
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
-                }
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => handlePageChange(page)}
-                  isActive={page === currentPage}
-                  className="cursor-pointer"
-                >
-                  {page}
-                </PaginationLink>
+        {/* Footer - Pagination */}
+        <div className="border-t py-6">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() =>
+                    startTransition(() => {
+                      addTransitionType("navigation-back");
+                      handlePageChange(currentPage - 1);
+                    })
+                  }
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
               </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => handlePageChange(currentPage + 1)}
-                className={
-                  currentPage === totalPages
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      // onClick={() => handlePageChange(page)}
+                      onClick={() =>
+                        startTransition(() => {
+                          addTransitionType(
+                            page > currentPage
+                              ? "navigation-forward"
+                              : "navigation-back",
+                          );
+                          handlePageChange(page);
+                        })
+                      }
+                      isActive={page === currentPage}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    startTransition(() => {
+                      addTransitionType("navigation-forward");
+                      handlePageChange(currentPage + 1);
+                    })
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
-
-      {/* Product Image Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>{currentProduct.name}</DialogTitle>
-          </DialogHeader>
-          <div className="flex items-center justify-center p-8">
-            <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-              <span className="text-gray-400" style={{ fontSize: "20rem" }}>
-                {currentProduct.emoji}
-              </span>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+    </ViewTransition>
   );
 };
 
