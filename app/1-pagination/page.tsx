@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -24,6 +30,7 @@ import { products } from "@/lib/products";
 
 const Page = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const currentProduct = products[currentPage - 1];
   const totalPages = products.length;
 
@@ -51,7 +58,10 @@ const Page = () => {
           <div className="flex items-center justify-center">
             <Card className="w-full">
               <CardContent className="p-6">
-                <div className="h-156 relative bg-gray-100 rounded-lg flex items-center justify-center">
+                <div
+                  className="h-156 relative bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+                  onClick={() => setIsDialogOpen(true)}
+                >
                   <span className="text-gray-400 text-9xl">
                     {currentProduct.emoji}
                   </span>
@@ -96,7 +106,7 @@ const Page = () => {
               </CardContent>
             </Card>
 
-            <Button size="lg" className="w-full">
+            <Button size="lg" className="w-full" disabled>
               <ShoppingCart className="mr-2 h-5 w-5" />
               Add to Cart
             </Button>
@@ -142,6 +152,22 @@ const Page = () => {
           </PaginationContent>
         </Pagination>
       </div>
+
+      {/* Product Image Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>{currentProduct.name}</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-center p-8">
+            <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+              <span className="text-gray-400" style={{ fontSize: "20rem" }}>
+                {currentProduct.emoji}
+              </span>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
