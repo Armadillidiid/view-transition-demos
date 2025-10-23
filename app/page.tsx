@@ -17,7 +17,7 @@ export default function Home() {
                 size: "none",
                 className: "text-xl",
               })}
-              href=""
+              href="/1-pagination"
             >
               1. Pagination
             </Link>
