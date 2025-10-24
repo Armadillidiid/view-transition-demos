@@ -41,12 +41,10 @@ const Page = ({ productId, products }: Props) => {
   const totalPages = products.length;
 
   const handlePageChange = (page: number) => {
-    startTransition(() => {
-      if (page >= 1 && page <= totalPages) {
-        const newProductId = products[page - 1].id;
-        router.push(`/1-pagination/${newProductId}`, { scroll: false });
-      }
-    });
+    if (page >= 1 && page <= totalPages) {
+      const newProductId = products[page - 1].id;
+      router.push(`/1-pagination/${newProductId}`, { scroll: false });
+    }
   };
 
   return (
@@ -63,7 +61,7 @@ const Page = ({ productId, products }: Props) => {
         </div>
 
         {/* Main Content - Two Column Layout */}
-        <div className="flex-1 container slide-in-from-right mx-auto px-4 py-8">
+        <div className="flex-1 container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Left Column - Product Image */}
             {isDialogOpen ? (
@@ -155,13 +153,12 @@ const Page = ({ productId, products }: Props) => {
                 (page) => (
                   <PaginationItem key={page}>
                     <PaginationLink
-                      // onClick={() => handlePageChange(page)}
                       onClick={() =>
                         startTransition(() => {
                           addTransitionType(
                             page > currentPage
                               ? "navigation-forward"
-                              : "navigation-back"
+                              : "navigation-back",
                           );
                           handlePageChange(page);
                         })
@@ -172,7 +169,7 @@ const Page = ({ productId, products }: Props) => {
                       {page}
                     </PaginationLink>
                   </PaginationItem>
-                )
+                ),
               )}
               <PaginationItem>
                 <PaginationNext
