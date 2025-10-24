@@ -1,5 +1,4 @@
 import { buttonVariants } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -29,7 +28,7 @@ export default function Home() {
                 size: "none",
                 className: "text-xl",
               })}
-              href=""
+              href="/"
             >
               2. Pagination with direction (using transition types)
             </Link>
@@ -41,7 +40,7 @@ export default function Home() {
                 size: "none",
                 className: "text-xl",
               })}
-              href=""
+              href="/"
             >
               3. Selective view transitions (e.g., opt out certain elements from
               transition)
