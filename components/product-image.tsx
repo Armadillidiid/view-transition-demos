@@ -7,10 +7,12 @@ interface ProductImageProps {
   onClick: () => void;
 }
 
-const PRODUCT_IMAGE_VT_NAME = "product-image";
+export const PRODUCT_CONTAINER_VT_NAME = "product-container";
+export const PRODUCT_IMAGE_VT_NAME = "product-image";
+
 export function ProductImage({ id, emoji, onClick }: ProductImageProps) {
   return (
-    <ViewTransition name={`${PRODUCT_IMAGE_VT_NAME}-${id}`}>
+    <ViewTransition name={`${PRODUCT_CONTAINER_VT_NAME}-${id}`}>
       <div className="flex items-center justify-center">
         <Card className="w-full p-0 aspect-square">
           <CardContent className="flex flex-1 p-16">
@@ -19,6 +21,7 @@ export function ProductImage({ id, emoji, onClick }: ProductImageProps) {
               onClick={onClick}
             >
               <ViewTransition
+                name={`${PRODUCT_IMAGE_VT_NAME}-${id}`}
                 default={{
                   default: "auto",
                   "navigation-back": "slide-right",
@@ -55,7 +58,7 @@ export function ProductImageDialog({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={() => onOpenChange(false)}
     >
-      <ViewTransition name={`${PRODUCT_IMAGE_VT_NAME}-${id}`}>
+      <ViewTransition name={`${PRODUCT_CONTAINER_VT_NAME}-${id}`}>
         <div
           className="bg-white rounded-lg p-8 max-w-[600px] w-full mx-4"
           onClick={(e) => e.stopPropagation()}
