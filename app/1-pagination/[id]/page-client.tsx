@@ -90,12 +90,17 @@ const Page = ({ productId, products }: Props) => {
                 {currentProduct.badge && (
                   <Badge className="mb-2">{currentProduct.badge}</Badge>
                 )}
-                <h1 className="text-4xl font-bold mb-2">
-                  {currentProduct.name}
-                </h1>
-                <p className="text-3xl font-semibold text-primary">
-                  ${currentProduct.price.toFixed(2)}
-                </p>
+
+                <ViewTransition name={`product-name-${currentProduct.id}`}>
+                  <h1 className="text-4xl font-bold mb-2 w-fit">
+                    {currentProduct.name}
+                  </h1>
+                </ViewTransition>
+                <ViewTransition name={`product-price-${currentProduct.id}`}>
+                  <p className="text-3xl font-semibold text-primary">
+                    ${currentProduct.price.toFixed(2)}
+                  </p>
+                </ViewTransition>
               </div>
 
               <Card>

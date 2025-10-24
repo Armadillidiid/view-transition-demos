@@ -38,15 +38,22 @@ const Page = () => {
                   {/* Product Emoji */}
                   <ViewTransition
                     name={`${PRODUCT_IMAGE_VT_NAME}-${product.id}`}
+                    default={"banner-img"}
                   >
-                    <div className="text-8xl mb-4 text-center">
+                    <div className="text-8xl w-fit mb-4 mx-auto text-center">
                       {product.emoji}
                     </div>
                   </ViewTransition>
-                  <CardTitle>{product.name}</CardTitle>
-                  <CardDescription className="text-2xl font-semibold text-primary">
-                    ${product.price.toFixed(2)}
-                  </CardDescription>
+                  <ViewTransition name={`product-name-${product.id}`}>
+                    <CardTitle className="text-4xl font-bold w-fit">
+                      {product.name}
+                    </CardTitle>
+                  </ViewTransition>
+                  <ViewTransition name={`product-price-${product.id}`}>
+                    <CardDescription className="text-2xl font-semibold text-primary">
+                      ${product.price.toFixed(2)}
+                    </CardDescription>
+                  </ViewTransition>
                 </CardHeader>
                 <CardFooter>
                   <Button asChild className="w-full" variant="secondary">

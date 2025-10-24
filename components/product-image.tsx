@@ -22,13 +22,9 @@ export function ProductImage({ id, emoji, onClick }: ProductImageProps) {
             >
               <ViewTransition
                 name={`${PRODUCT_IMAGE_VT_NAME}-${id}`}
-                default={{
-                  default: "auto",
-                  "navigation-back": "slide-right",
-                  "navigation-forward": "slide-left",
-                }}
+                default={"banner-img"}
               >
-                <span className="text-gray-400 text-9xl">{emoji}</span>
+                <span className="text-gray-400 text-9xl w-fit">{emoji}</span>
               </ViewTransition>
             </div>
           </CardContent>
