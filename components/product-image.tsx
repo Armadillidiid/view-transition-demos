@@ -10,14 +10,7 @@ interface ProductImageProps {
 const PRODUCT_IMAGE_VT_NAME = "product-image";
 export function ProductImage({ id, emoji, onClick }: ProductImageProps) {
   return (
-    <ViewTransition
-      name={`${PRODUCT_IMAGE_VT_NAME}-${id}`}
-      default={{
-        default: "auto",
-        "navigation-back": "slide-right",
-        "navigation-forward": "slide-left",
-      }}
-    >
+    <ViewTransition name={`${PRODUCT_IMAGE_VT_NAME}-${id}`}>
       <div className="flex items-center justify-center">
         <Card className="w-full p-0 aspect-square">
           <CardContent className="flex flex-1 p-16">
@@ -25,7 +18,15 @@ export function ProductImage({ id, emoji, onClick }: ProductImageProps) {
               className="relative bg-gray-100 rounded-lg flex flex-1 items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
               onClick={onClick}
             >
-              <span className="text-gray-400 text-9xl">{emoji}</span>
+              <ViewTransition
+                default={{
+                  default: "auto",
+                  "navigation-back": "slide-right",
+                  "navigation-forward": "slide-left",
+                }}
+              >
+                <span className="text-gray-400 text-9xl">{emoji}</span>
+              </ViewTransition>
             </div>
           </CardContent>
         </Card>
@@ -59,7 +60,6 @@ export function ProductImageDialog({
           className="bg-white rounded-lg p-8 max-w-[600px] w-full mx-4"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* <h2 className="text-2xl font-bold mb-4">{productName}</h2> */}
           <div className="flex items-center justify-center p-8">
             <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
               <span className="text-gray-400 text-9xl">{emoji}</span>
